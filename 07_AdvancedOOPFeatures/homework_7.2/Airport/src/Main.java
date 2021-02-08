@@ -18,7 +18,7 @@ public class Main {
 
         pulkovo.getTerminals().stream()
                 .flatMap(terminal -> terminal.getFlights().stream())
-                .filter(f -> (f.getDate().after(lastTwoHours) & f.getDate().before(now) & f.getType() == (Flight.Type.ARRIVAL)))
+                .filter(f -> (f.getDate().after(lastTwoHours) & f.getDate().before(now) & f.getType().equals (Flight.Type.ARRIVAL)))
                 .forEach(f -> System.out.println(f.getAircraft().getModel() + "  /  " +  f.getDate()));
         System.out.println("\n" + now);
     }
