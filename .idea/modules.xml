@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.2/Employees/Employees.iml" filepath="$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.2/Employees/Employees.iml" />
+      <module fileurl="file://$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.2/Employees/LambdaExpression/LambdaExpression.iml" filepath="$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.2/Employees/LambdaExpression/LambdaExpression.iml" />
       <module fileurl="file://$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.1/LambdaExpressions/LambdaExpressions.iml" filepath="$PROJECT_DIR$/07_AdvancedOOPFeatures/homework_7.1/LambdaExpressions/LambdaExpressions.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/java_basics.iml" filepath="$PROJECT_DIR$/.idea/java_basics.iml" />
     </modules>
