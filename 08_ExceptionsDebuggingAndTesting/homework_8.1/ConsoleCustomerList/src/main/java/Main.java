@@ -9,7 +9,7 @@ public class Main {
             COMMAND_EXAMPLES;
     private static final String helpText = "Command examples:\n" + COMMAND_EXAMPLES;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         CustomerStorage executor = new CustomerStorage();
 
@@ -19,17 +19,23 @@ public class Main {
 
             if (tokens[0].equals("add")) {
                 try {
+                    if (tokens.length < 2) {
+                        throw new ErrorComponents("add name, email, telephone number");
+                    }
                     executor.addCustomer(tokens[1]);
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ErrorComponents e) {
                     System.out.println(e.getMessage());
                 }
             } else if (tokens[0].equals("list")) {
                 executor.listCustomers();
             } else if (tokens[0].equals("remove")) {
                 try {
+                    if (tokens.length < 2) {
+                        throw new ErrorComponents("add customer name");
+                    }
                     executor.removeCustomer(tokens[1]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             } else if (tokens[0].equals("count")) {
                 System.out.println("There are " + executor.getCount() + " customers");
