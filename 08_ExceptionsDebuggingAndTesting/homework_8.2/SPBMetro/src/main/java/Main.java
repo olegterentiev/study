@@ -1,5 +1,9 @@
 import core.Line;
 import core.Station;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,6 +15,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+    private static Logger Logger = LogManager.getLogger(Main.class);
+    private static final Marker search = MarkerManager.getMarker("search");
+    private static final Marker input_errors = MarkerManager.getMarker("input_errors");
+    private static final Marker exceptions = MarkerManager.getMarker("exceptions");
+
     private static final String DATA_FILE = "src/main/resources/map.json";
     private static Scanner scanner;
 
@@ -22,15 +31,25 @@ public class Main {
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
         scanner = new Scanner(System.in);
         for (; ; ) {
-            Station from = takeStation("Введите станцию отправления:");
-            Station to = takeStation("Введите станцию назначения:");
+            try {
+                Station from = takeStation("Введите станцию отправления:");
+                Station to = takeStation("Введите станцию назначения:");
+// Проверка логирования исключений.
+                if (from.getName().equals(to.getName())) {
+                    throw new MyException("Станции отправления и назначения совпадают");
+                }
+                Logger.info(search, "Пользователь ищет : " + from.getName() + "  " + to.getName());
 
-            List<Station> route = calculator.getShortestRoute(from, to);
-            System.out.println("Маршрут:");
-            printRoute(route);
+                List<Station> route = calculator.getShortestRoute(from, to);
+                System.out.println("Маршрут:");
+                printRoute(route);
 
-            System.out.println("Длительность: " +
-                    RouteCalculator.calculateDuration(route) + " минут");
+
+                System.out.println("Длительность: " +
+                        RouteCalculator.calculateDuration(route) + " минут");
+            } catch (Exception e) {
+                Logger.info(exceptions, "Исключение : " + e);
+            }
         }
     }
 
@@ -63,6 +82,7 @@ public class Main {
             if (station != null) {
                 return station;
             }
+            Logger.info(input_errors, " Пользователь ввёл не существующую станцию : " + line);
             System.out.println("Станция не найдена :(");
         }
     }
