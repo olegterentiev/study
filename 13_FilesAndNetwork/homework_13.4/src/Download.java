@@ -9,7 +9,7 @@ public class Download {
     public static void downloadFile(String path) throws IOException {
         String[] fragments = path.split("/");
         String nameFile = fragments[fragments.length - 1];
-        if (nameFile.endsWith(".jpg")) {
+//        if (nameFile.endsWith(".jpg")) {
             System.out.println(nameFile);
             URL url = new URL(path);
             File file = new File("images", nameFile);
@@ -26,7 +26,7 @@ public class Download {
                 in.close();
                 out.close();
             }
-        }
+//        }
     }
 
     public static String parserFile(String file) {

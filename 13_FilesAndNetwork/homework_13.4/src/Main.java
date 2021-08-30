@@ -10,7 +10,7 @@ public class Main {
 
         String code = Download.parserFile("data/code.html");
         Document doc = Jsoup.parse(code);
-        Elements elements = doc.select("img");
+        Elements elements = doc.select("img[src~=.jpg$]");
         for (Element el : elements) {
             String path = el.absUrl("src");
             Download.downloadFile(path);
