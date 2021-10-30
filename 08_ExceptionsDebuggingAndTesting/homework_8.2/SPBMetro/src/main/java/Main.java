@@ -26,6 +26,7 @@ public class Main {
     private static StationIndex stationIndex;
 
     public static void main(String[] args) {
+
         RouteCalculator calculator = getRouteCalculator();
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
