@@ -30,18 +30,18 @@ public class Main {
         }
 
         for (String l2 : studentName) {
-            Query studentId = session.createQuery("select id FROM Student WHERE name = :param");
-            Query courseName = session.createQuery("select courseName FROM PurchaseListKey WHERE studentName = :param");
-            studentId.setParameter("param" , l2);
-            courseName.setParameter("param" , l2);
-            int rrr = (int) studentId.getSingleResult();
-            System.out.println(rrr);
-            String course = String.valueOf(courseName.getSingleResult());
-            System.out.println(course);
+            Query studentIdQuery = session.createQuery("select id FROM Student WHERE name = :param");
+            Query courseNameQuery = session.createQuery("select courseName FROM PurchaseList WHERE studentName = :param");
+            studentIdQuery.setParameter("param" , l2);
+            courseNameQuery.setParameter("param" , l2);
+            int studentId = (int) studentIdQuery.getSingleResult();
+//            System.out.println(studentId);
+            String courseName = String.valueOf(courseNameQuery.getSingleResult());
+//            System.out.println(courseName);
             Query courseId = session.createQuery("select id FROM Course WHERE name = :param");
-            courseId.setParameter("param", course);
+            courseId.setParameter("param", courseName);
             int courId = (int) courseId.getSingleResult();
-            LinkedPurchaseList test = new LinkedPurchaseList(rrr,courId);
+            LinkedPurchaseList test = new LinkedPurchaseList(studentId,courId);
             System.out.println(test);
             session.saveOrUpdate(test);
         }
