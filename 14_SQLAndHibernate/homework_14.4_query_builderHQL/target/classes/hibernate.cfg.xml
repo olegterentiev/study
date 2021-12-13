@@ -20,7 +20,6 @@
         <mapping class="Teacher"/>
         <mapping class="Subscription"/>
         <mapping class="PurchaseList"/>
-        <mapping class="PurchaseListKey"/>
         <mapping class="LinkedPurchaseList"/>
 
 

@@ -4,47 +4,30 @@ import java.util.Date;
 @Entity
 public class PurchaseList {
 
-//    public PurchaseList(String studentName, String courseName) {
-//        this.studentName = studentName;
-//        this.courseName = courseName;
-//    }
-
-    public PurchaseListKey getId() {
-        return id;
+    public PurchaseList(CompositeKey compositeKey, int price, Date subscriptionDate) {
+        this.compositeKey = compositeKey;
+        this.price = price;
+        this.subscriptionDate = subscriptionDate;
     }
-
-    public void setId(PurchaseListKey id) {
-        this.id = id;
+    public PurchaseList() {
     }
 
     @EmbeddedId
-    private PurchaseListKey id;
+    private CompositeKey compositeKey;
 
-    @Column(name = "student_name", insertable = false, updatable = false)
-    private String studentName;
-
-    @Column(name = "course_name", insertable = false, updatable = false)
-    private String courseName;
-
+    @Column(name = "price")
     private int price;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "subscription_date")
     private Date subscriptionDate;
 
-    public String getStudentName() {
-        return studentName;
+    public CompositeKey getCompositeKey() {
+        return compositeKey;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCompositeKey(CompositeKey compositeKey) {
+        this.compositeKey = compositeKey;
     }
 
     public int getPrice() {
@@ -63,7 +46,4 @@ public class PurchaseList {
         this.subscriptionDate = subscriptionDate;
     }
 
-    public String toString(){
-        return String.valueOf(this.id);
-    }
 }

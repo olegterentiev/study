@@ -5,47 +5,46 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.query.Query;
-
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure().build();
         Metadata metadata = new MetadataSources(registry).getMetadataBuilder().build();
         SessionFactory sessionFactory = metadata.getSessionFactoryBuilder().build();
 
         Session session = sessionFactory.openSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
         Transaction transaction = session.beginTransaction();
 
-        ArrayList<String> studentName = new ArrayList<>();
-        List<PurchaseList> list = session.createQuery("FROM PurchaseList").getResultList();
+        CriteriaQuery<PurchaseList> query = builder.createQuery(PurchaseList.class);
+        Root<PurchaseList> root = query.from(PurchaseList.class);
+        query.select(root);
+        Map<String, Integer> courses = new HashMap<>();
+        session.createQuery("SELECT name, id FROM Course").getResultList().forEach(e -> {
+            Object[] g = (Object[]) e;
+            courses.put((String) g[0],  (Integer) g[1]);
+        });
 
-        for (PurchaseList l1: list) {
-            String name = l1.getStudentName();
-            studentName.add(name);
-        }
+        Map<String, Integer> students = new HashMap<>();
+        session.createQuery("SELECT name, id FROM Student").getResultList().forEach(e -> {
+            Object[] g = (Object[]) e;
+            students.put((String) g[0],  (Integer) g[1]);
+        });
 
-        for (String l2 : studentName) {
-            Query studentIdQuery = session.createQuery("select id FROM Student WHERE name = :param");
-            Query courseNameQuery = session.createQuery("select courseName FROM PurchaseList WHERE studentName = :param");
-            studentIdQuery.setParameter("param" , l2);
-            courseNameQuery.setParameter("param" , l2);
-            int studentId = (int) studentIdQuery.getSingleResult();
-//            System.out.println(studentId);
-            String courseName = String.valueOf(courseNameQuery.getSingleResult());
-//            System.out.println(courseName);
-            Query courseId = session.createQuery("select id FROM Course WHERE name = :param");
-            courseId.setParameter("param", courseName);
-            int courId = (int) courseId.getSingleResult();
-            LinkedPurchaseList test = new LinkedPurchaseList(studentId,courId);
-            System.out.println(test);
-            session.saveOrUpdate(test);
-        }
-
+        session.createQuery(query).getResultList().forEach(purchase -> {
+            CompositeKey compositeKey = purchase.getCompositeKey();
+            LinkedPurchaseList linkedPurchase = new LinkedPurchaseList(
+                    students.get(compositeKey.getStudent()),
+                    courses.get(compositeKey.getCourse()));
+            session.save(linkedPurchase);
+        });
         transaction.commit();
         sessionFactory.close();
     }
