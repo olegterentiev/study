@@ -1,6 +1,9 @@
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.io.File;
+import static org.imgscalr.Scalr.OP_ANTIALIAS;
 
 public class ImageResizer extends Thread {
 
@@ -16,31 +19,28 @@ public class ImageResizer extends Thread {
         this.start = start;
     }
 
+    public static BufferedImage resize(BufferedImage src, int targetWidth, int targetHeight, BufferedImageOp... ops){
+
+        int type = src.getType() == 0? BufferedImage.TYPE_INT_ARGB : src.getType();
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, type);
+        Graphics2D graphics = resizedImage.createGraphics();
+        graphics.drawImage(src, 0, 0, targetWidth, targetHeight, null);
+        graphics.dispose();
+        return resizedImage;
+    }
+
     @Override
     public void run() {
-        try {
+
+                try {
             for (File file : files) {
                 BufferedImage image = ImageIO.read(file);
                 if (image == null) {
                     continue;
                 }
+                int newHeight = (int) Math.round(image.getHeight() / (image.getWidth() / (double) newWidth));
 
-                int newHeight = (int) Math.round(
-                        image.getHeight() / (image.getWidth() / (double) newWidth)
-                );
-                BufferedImage newImage = new BufferedImage(
-                        newWidth, newHeight, BufferedImage.TYPE_INT_RGB
-                );
-
-                int widthStep = image.getWidth() / newWidth;
-                int heightStep = image.getHeight() / newHeight;
-
-                for (int x = 0; x < newWidth; x++) {
-                    for (int y = 0; y < newHeight; y++) {
-                        int rgb = image.getRGB(x * widthStep, y * heightStep);
-                        newImage.setRGB(x, y, rgb);
-                    }
-                }
+                BufferedImage newImage = ImageResizer.resize(image,newWidth,newHeight, OP_ANTIALIAS);
 
                 File newFile = new File(dstFolder + "/" + file.getName());
                 ImageIO.write(newImage, "jpg", newFile);
